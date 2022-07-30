@@ -1,0 +1,3 @@
+admin:qwerty
+useruser:qwerty
+testtest:qwerty
