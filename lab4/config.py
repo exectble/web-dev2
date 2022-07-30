@@ -1,0 +1,5 @@
+SECRET_KEY = 'verysecretkey'
+MYSQL_USER = 'std_1947_web'
+MYSQL_DATABASE = 'std_1947_web'
+MYSQL_HOST = 'std-mysql.ist.mospolytech.ru'
+MYSQL_PASSWORD = 'webwebweb'
