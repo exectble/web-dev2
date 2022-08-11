@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% from 'pagination.html' import render_pagination %}
+{% from 'review.html' import render_review_form %}
+
+{% block content %} 
+
+    <div class=" container mt-5">
+        <form class="mb-3 row">
+                <div class="col-sm-6 my-3">
+                    <select  class="custom-select form-control"  name="order">
+                        <option {% if search_params.order == 1 %}selected{% endif %} value="1">По новизне</option>
+                        <option {% if search_params.order == 2 %}selected{% endif %} value="2">По убыванию рейтинга</option>
+                        <option {% if search_params.order == 3 %}selected{% endif %} value="3">По возроастанию рейтинга</option>
+                    </select>
+                </div>
+                <div class="col-sm-6 my-3">
+                    <button type="submit" class="btn btn-primary w-100 mt-auto form-control">Поиск</button>
+                </div>
+        </form>
+        {% for rating in top %}
+        <div class="mb-4 row">
+            <div class="col-lg-1 col-sm-2 offset-sm-0 offset-4 col-4 offset-4 text-center">
+                <img class="img-fluid rounded-circle cursor-pointer"
+                                src="{{ url_for('static', filename='images/default-profile-picture-300x300.jpeg') }}" alt="profile-pic">
+            </div>
+            <div class="col-lg-11 col-sm-10 col-12">
+                <div class="row">
+                    <div class="col-6 ">{{rating.Review.created_at}} {{ rating.User.full_name }}</div>
+                    <div class="col-6 text-right">Рейтинг {{rating.Review.rating}} из 5</div>
+                    <div class="mt-2 col-12 text-justify">{{ rating.Review.text }}</div>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+    </div>
+    <div class="mb-5">
+        {{ render_pagination(pagination, request.endpoint, search_params) }}
+    </div>
+    {% if search_params.u_top is none and current_user.is_authenticated %}
+    {{ render_review_form(url_for('courses.review', course_id=search_params.course_id, user_id=current_user.id))}}
+    {% endif %}
+{% endblock %}
