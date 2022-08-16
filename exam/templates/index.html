@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+{% from 'pagination.html' import render_pagination %}
+{% block content %}
+<div class="h-100 container books">
+    <div class="mt-auto text-center">
+        <h1>Книги</h1>
+    </div>
+    <div class="row justify-content-between mb-3">
+        {% for book in books %}
+        <div class="col-md-5 border card-book d-flex flex-column justify-content-center mb-3">
+            <div class="card-book-img">
+                {% for cover in covers%}
+                {% if cover.book_id==book.id%}
+                <div class="book-cover p-2 mt-2 mb-2" style="background-image: url({{ cover.url }});">
+                </div>
+                {% endif %}
+                {% endfor %}
+            </div>
+            <div class="card-book-img d-flex flex-column">
+                <div class="text-center mt-2 mb-3 card-book-name border-bottom">
+                    <p class="book-name fs-3 fw-bold mb-0">{{ book.name }}</p>
+                </div>
+                <div class="d-flex card-genre border-bottom flex-row mb-1 ">
+                    <p class="fw-bold mb-0">Жанр:</p>
+                    <p class="">
+                        {% for book_genre in book_genres %}
+                        {% if book_genre.book_id==book.id%}
+                        {{ book_genre.genre.name }}
+                        {% endif %}
+                        {% endfor %}
+                    </p>
+                </div>
+                <div class="d-flex flex-row mb-1 mt-1 border-bottom card-rate">
+                    <p class="fw-bold mb-0 ">Рейтинг:</p>
+                    <p class=""><span>{{ "%.2f" | format(book.rating) }}</span> <span>★</span></p>
+                </div>
+                <div class="d-flex flex-row mb-1 mt-1 border-bottom card-review">
+                    <p class="fw-bold">Кол-во рецензий:</p>
+                    <p>{{ book.rating_num }}</p>
+                </div>
+                
+            </div>
+            <div class="btn-group mb-2 mt-2 card-book-buttons">
+                {% if current_user.role_id == 1 or current_user.role_id == 2 %}
+                <a class="btn btn-secondary" href="{{ url_for('books.edit', book_id=book.id) }}">Редактировать</a>
+                {% endif %}
+                <a class="btn btn-primary button-primary"
+                    href="{{ url_for('books.show', book_id=book.id) }}">Посмотреть</a>
+                {% if current_user.role_id == 1 %}
+                <button type="button" class="btn btn-danger button-danger"
+                    data-url="{{ url_for('books.delete', book_id=book.id) }}" data-bs-toggle="modal"
+                    data-bs-target="#delete-book">
+                    Удалить
+                </button>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="mb-5">
+        {{ render_pagination(pagination, request.endpoint) }}
+    </div>
+
+    {% if current_user.role_id == 1 %}
+    <div class="text-center my-3">
+        <a class="btn btn-lg btn-dark" href="{{ url_for('books.new') }}">Добавить книгу</a>
+    </div>
+    {% endif %}
+</div>
+
+<div class="modal fade" id="delete-book" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Удаление книги</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+            </div>
+            <div class="modal-body">
+                <p>Вы действительно хотите удалить книгу? <span id="book-name">{{ books.name }}</span>?</p>
+                <form action="" method="POST">
+                    <input type="hidden" name="book_id" value="">
+                    <input id="delete-btn" type="submit" class="d-none">
+                </form>
+            </div>
+            <div class="modal-footer">
+                <label class="btn btn-danger" for="delete-btn">Удалить</label>
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Отменить</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,129 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container d-flex flex-column">
+    <div class="row mb-3">
+        <div class="col-md-6 mt-2">
+            {% for cover in covers %}
+            {% if cover.book_id==book.id %}
+            <div class="show-img p-2 mt-2 mb-2" style="background-image: url({{ cover.url }});">
+            </div>
+            {% endif %}
+            {% endfor %}
+        </div>
+        <div class="col-md-6 d-flex flex-column mt-2 text-right">
+            <div class="mt-1">
+                <p>Название: <span>"{{ book.name }}"</span></p>
+            </div>
+            <div class="mb-1">
+                <p>Автор: <span>{{ book.author }}</span></p>
+            </div>
+            <div class="mb-1">
+                <p>Год издания: <span>{{ book.year }}</span></p>
+            </div>
+            <div class="mb-1">
+                <p>Издательство: <span>{{ book.publishing_house}}</span></p>
+            </div>
+            <div class="mb-1">
+                <p>Кол-во страниц: <span>{{ book.pages }}</span></p>
+            </div>
+            <div class="d-flex flex-row mb-3">
+                <p class=" mb-0">Жанр:</p>
+                <p class="">
+                    {% for book_genre in book.book_genre %}
+                    <li class="genre-li  py-0 mb-1">{{ book_genre.genre.name }}</li>
+                    {% endfor %}
+                </p>
+            </div>
+            <div class="">
+                <p>
+                    Рейтинг: <span>{{ "%.2f" | format(book.rating) }}</span> <span>★</span>
+                </p>
+            </div>
+        </div>
+    </div>
+    <div class="mb-3">
+        <h5 class="text-center">Описание</h5>
+        <p>{{ book.short_description }}</p>
+    </div>
+    <div class="mb-3">
+        <h5 class="text-center">Ваша рецензия</h5>
+        {% if current_user.is_authenticated %}
+            {% if check_user %}
+                {% for review in reviews %}
+                {% if current_user.id == review.user_id %}
+                <div class="d-flex flex-column my-2 border review-card">
+                    <div class="row m-2 review-header text-center">
+                        <div class="col-md-2">
+                            <img class="img-fluid rounded-circle cursor-pointer logo-user"
+                                src="{{ url_for('static', filename='images/default-profile-picture-300x300.jpeg') }}"
+                                alt="profile-pic">
+                        </div>
+                        <div class="col-md-10 review-header-info">
+                            <div class="d-flex flex-column">
+                                <div class="row">
+                                    <div class="col-6">
+                                        <p class="fw-bold">{{review.user.full_name}}</p>
+                                    </div>
+                                    <div class="col-6 review-header-info-data">
+                                        <p>{{review.created_at }}</p>
+                                    </div>
+                                </div>
+                                <div>
+                                    <p class="fw-bold">Оценка: {{ review.rating }} <span>★</span></p>
+                                </div>
+                                <div class="m-2">
+                                    <p name="text">{{ review.text }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="text-center mb-2 mt-3">
+                    <a class="btn btn-primary text-center" href="{{ url_for('books.review_render', book_id=book.id)}}">Оставить
+                    рецензию</a>
+                </div>
+            {% endif %}
+        {% else %}
+            <div class="text-center mb-2 mt-3">
+                <p>Чтобы оставлять рецензии нужно пройти аутентификацию</p>
+            </div>
+        {% endif %}
+        <div class="mb-3 mt-1">
+            <h5 class="text-center">Рецензии</h5>
+            {% for review in reviews %}
+            <div class="d-flex flex-column my-2 border review-card mb-2">
+                <div class="row m-2  review-header text-center">
+                    <div class="col-md-2">
+                        <img class="img-fluid rounded-circle cursor-pointer logo-user"
+                            src="{{ url_for('static', filename='images/default-profile-picture-300x300.jpeg') }}"
+                            alt="profile-pic">
+                    </div>
+                    <div class="col-md-10 review-header-info">
+                        <div class="d-flex flex-column">
+                            <div class="row">
+                                <div class="col-6">
+                                    <p class="fw-bold"> {{review.user.full_name}}</p>
+                                </div>
+                                <div class="col-6 review-header-info-data">
+                                    <p>{{review.created_at }}</p>
+                                </div>
+                            </div>
+                            <div>
+                                <p class="fw-bold">Оценка: {{ review.rating }} <span>★</span></p>
+                            </div>
+                            <div class="m-2">
+                                <p name="text">{{ review.text }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}
