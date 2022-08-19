@@ -7,7 +7,7 @@
     </div>
     <div class="row justify-content-between mb-3">
         {% for book in books %}
-        <div class="col-md-5 border card-book d-flex flex-column justify-content-center mb-3">
+        <div class="col-md-7 border card-book d-flex flex-column justify-content-center mb-3 mx-auto">
             <div class="card-book-img">
                 {% for cover in covers%}
                 {% if cover.book_id==book.id%}
