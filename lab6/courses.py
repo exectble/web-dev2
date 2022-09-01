@@ -69,7 +69,7 @@ def create():
     flash(f'Курс {course.name} был успешно создан!', 'success')
 
     return redirect(url_for('courses.index'))
-# добавление всего пяти последний рейтингов, но не рейтинг пользователя который смортрит 
+
 @bp.route('/<int:course_id>')
 def show(course_id):
     course = Course.query.get(course_id)
